@@ -1,6 +1,6 @@
 const core = require('@actions/core');
 const { getInputs } = require('./get-inputs');
-const { searchLatestTaggedIssue } = require('./issue-query-processor');
+const { searchLatestLabeledIssue } = require('./issue-query-processor');
 const { setOutputs } = require('./set-outputs');
 
 function run() {
@@ -16,9 +16,9 @@ function run() {
  */
 async function main() {
   try {
-    const { token, owner, repo, tag } = getInputs();
+    const { token, owner, repo, label } = getInputs();
 
-    const issue = await searchLatestTaggedIssue(token, owner, repo, tag);
+    const issue = await searchLatestLabeledIssue(token, owner, repo, label);
     if (!issue) {
       core.setFailed('指定したタグでIssueが発見できませんでした.');
       return;

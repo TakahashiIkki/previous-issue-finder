@@ -13,7 +13,7 @@ const { setOutputs } = require('../src/set-outputs');
 jest.mock('../src/get-inputs');
 jest.mock('../src/issue-query-processor', () => {
   return {
-    searchLatestTaggedIssue: jest
+    searchLatestLabeledIssue: jest
       .fn()
       .mockResolvedValue({ issueNumber: 50, issueBody: 'sample issue value' })
   };
@@ -34,7 +34,7 @@ describe('action', () => {
       owner: 'TakahashiIkki',
       repo: 'repo',
       issueNumber: 50,
-      tag: 'task'
+      label: 'task'
     });
 
     await main.run();

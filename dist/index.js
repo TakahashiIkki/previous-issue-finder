@@ -29834,7 +29834,7 @@ const getInputs = () => ({
   token: core.getInput('repo_token'),
   owner: context.repo.owner,
   repo: context.repo.repo,
-  tag: core.getInput('tag', { required: true })
+  label: core.getInput('label', { required: true })
 });
 
 module.exports = { getInputs };
@@ -29847,13 +29847,13 @@ module.exports = { getInputs };
 
 const github = __nccwpck_require__(5438);
 
-const searchLatestTaggedIssue = async (token, owner, repo, searchByTag) => {
+const searchLatestLabeledIssue = async (token, owner, repo, searchByLabel) => {
   const githubClient = github.getOctokit(token);
 
-  // 指定したタグがついた issue を一件のみ取得する
+  // 指定したラベルがついた issue を一件のみ取得する
   const { data: issues } = await githubClient.rest.search.issuesAndPullRequests(
     {
-      q: `repo:${owner}/${repo} label:${searchByTag} type:issue`,
+      q: `repo:${owner}/${repo} label:${searchByLabel} type:issue`,
       sort: 'created',
       per_page: 1
     }
@@ -29873,7 +29873,7 @@ const searchLatestTaggedIssue = async (token, owner, repo, searchByTag) => {
   };
 };
 
-module.exports = { searchLatestTaggedIssue };
+module.exports = { searchLatestLabeledIssue };
 
 
 /***/ }),
@@ -29883,7 +29883,7 @@ module.exports = { searchLatestTaggedIssue };
 
 const core = __nccwpck_require__(2186);
 const { getInputs } = __nccwpck_require__(2119);
-const { searchLatestTaggedIssue } = __nccwpck_require__(9140);
+const { searchLatestLabeledIssue } = __nccwpck_require__(9140);
 const { setOutputs } = __nccwpck_require__(8108);
 
 function run() {
@@ -29899,9 +29899,9 @@ function run() {
  */
 async function main() {
   try {
-    const { token, owner, repo, tag } = getInputs();
+    const { token, owner, repo, label } = getInputs();
 
-    const issue = await searchLatestTaggedIssue(token, owner, repo, tag);
+    const issue = await searchLatestLabeledIssue(token, owner, repo, label);
     if (!issue) {
       core.setFailed('指定したタグでIssueが発見できませんでした.');
       return;
