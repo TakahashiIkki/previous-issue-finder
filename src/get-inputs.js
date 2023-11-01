@@ -3,8 +3,9 @@ const { context } = require('@actions/github');
 
 const getInputs = () => ({
   token: core.getInput('repo_token'),
+  owner: context.repo.owner,
   repo: context.repo.repo,
-  issueNumber: core.getInput('issue_number', { required: true })
+  tag: core.getInput('tag', { required: true })
 });
 
 module.exports = { getInputs };

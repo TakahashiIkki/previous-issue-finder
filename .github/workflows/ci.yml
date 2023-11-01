@@ -57,8 +57,10 @@ jobs:
         id: test-action
         uses: ./
         with:
-          issue_number: 2
+          tag: task
 
       - name: Print Output
         id: output
-        run: echo "${{ steps.test-action.outputs.time }}"
+        run:
+          echo "${{ steps.test-action.outputs.previousIssue }}"
+          echo "${{ steps.test-action.outputs.issueBody }}"

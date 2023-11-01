@@ -5,14 +5,20 @@
  * Specifically, the inputs listed in `action.yml` should be set as environment
  * variables following the pattern `INPUT_<INPUT_NAME>`.
  */
-const core = require('@actions/core');
 const main = require('../src/main');
 const { getInputs } = require('../src/get-inputs');
+const { setOutputs } = require('../src/set-outputs');
 
 // Mock the GitHub Actions core library
 jest.mock('../src/get-inputs');
-const setFailedMock = jest.spyOn(core, 'setFailed').mockImplementation();
-const setOutputMock = jest.spyOn(core, 'setOutput').mockImplementation();
+jest.mock('../src/issue-query-processor', () => {
+  return {
+    searchLatestTaggedIssue: jest
+      .fn()
+      .mockResolvedValue({ issueNumber: 50, issueBody: 'sample issue value' })
+  };
+});
+jest.mock('../src/set-outputs');
 
 // Mock the action's main function
 const runMock = jest.spyOn(main, 'run');
@@ -22,38 +28,18 @@ describe('action', () => {
     jest.clearAllMocks();
   });
 
-  it('sets the time output', async () => {
+  it('sets the issue output', async () => {
     getInputs.mockReturnValue({
       token: 'secure',
+      owner: 'TakahashiIkki',
       repo: 'repo',
-      issueNumber: 50
+      issueNumber: 50,
+      tag: 'task'
     });
 
     await main.run();
+
     expect(runMock).toHaveReturned();
-
-    expect(setOutputMock).toHaveBeenNthCalledWith(1, 'time', [
-      {
-        repo: 'repo',
-        issueNumber: 50
-      }
-    ]);
-  });
-
-  describe('failed when required parameter', () => {
-    it('fails when issue_number is not provided', async () => {
-      getInputs.mockImplementation(name => {
-        throw new Error('Input required and not supplied: issue_number');
-      });
-
-      await main.run();
-      expect(runMock).toHaveReturned();
-
-      // Verify that all of the core library functions were called correctly
-      expect(setFailedMock).toHaveBeenNthCalledWith(
-        1,
-        'Input required and not supplied: issue_number'
-      );
-    });
+    expect(setOutputs).toHaveBeenNthCalledWith(1, 50, 'sample issue value');
   });
 });
