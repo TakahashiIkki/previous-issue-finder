@@ -29832,11 +29832,48 @@ const { context } = __nccwpck_require__(5438);
 
 const getInputs = () => ({
   token: core.getInput('repo_token'),
+  owner: context.repo.owner,
   repo: context.repo.repo,
-  issueNumber: core.getInput('issue_number', { required: true })
+  tag: core.getInput('tag', { required: true })
 });
 
 module.exports = { getInputs };
+
+
+/***/ }),
+
+/***/ 9140:
+/***/ ((module, __unused_webpack_exports, __nccwpck_require__) => {
+
+const github = __nccwpck_require__(5438);
+
+const searchLatestTaggedIssue = async (token, owner, repo, searchByTag) => {
+  const githubClient = github.getOctokit(token);
+
+  // 指定したタグがついた issue を一件のみ取得する
+  const { data: issues } = await githubClient.rest.search.issuesAndPullRequests(
+    {
+      q: `repo:${owner}/${repo} label:${searchByTag} type:issue`,
+      sort: 'created',
+      per_page: 1
+    }
+  );
+
+  if (!issues) {
+    return undefined;
+  }
+
+  if (issues.items.length < 1) {
+    return undefined;
+  }
+
+  return {
+    issueNumber: issues.items[0].number,
+    issueBody: issues.items[0].body
+  };
+};
+
+module.exports = { searchLatestTaggedIssue };
 
 
 /***/ }),
@@ -29846,6 +29883,8 @@ module.exports = { getInputs };
 
 const core = __nccwpck_require__(2186);
 const { getInputs } = __nccwpck_require__(2119);
+const { searchLatestTaggedIssue } = __nccwpck_require__(9140);
+const { setOutputs } = __nccwpck_require__(8108);
 
 function run() {
   main().catch(error => {
@@ -29860,15 +29899,15 @@ function run() {
  */
 async function main() {
   try {
-    const { issueNumber, repo } = getInputs();
+    const { token, owner, repo, tag } = getInputs();
 
-    // Set outputs for other workflow steps to use
-    core.setOutput('time', [
-      {
-        repo,
-        issueNumber
-      }
-    ]);
+    const issue = await searchLatestTaggedIssue(token, owner, repo, tag);
+    if (!issue) {
+      core.setFailed('指定したタグでIssueが発見できませんでした.');
+      return;
+    }
+
+    setOutputs(issue.issueNumber, issue.issueBody);
   } catch (error) {
     // Fail the workflow run if an error occurs
     core.setFailed(error.message);
@@ -29878,6 +29917,21 @@ async function main() {
 module.exports = {
   run
 };
+
+
+/***/ }),
+
+/***/ 8108:
+/***/ ((module, __unused_webpack_exports, __nccwpck_require__) => {
+
+const core = __nccwpck_require__(2186);
+
+const setOutputs = (issueNumber, issueBody) => {
+  core.setOutput('previousIssue', issueNumber);
+  core.setOutput('issueBody', issueBody);
+};
+
+module.exports = { setOutputs };
 
 
 /***/ }),

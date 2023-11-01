@@ -10,14 +10,16 @@ inputs:
     required: false
     default: ${{ github.token }}
 
-  issue_number:
+  tag:
     required: true
-    description: The number that identifies the issue.
+    description: The tag for previous issue.
 
 # Define your outputs here.
 outputs:
-  time:
-    description: 'Your output description here'
+  previousIssue:
+    description: 'Previous Issue number'
+  issueBody:
+    description: 'Issue Body'
 
 runs:
   using: node20
