@@ -1,5 +1,5 @@
 name: 'previous-issue-finder'
-description: 'Retrieves the content of the latest Issue with the specified tag.'
+description: 'Retrieves the content of the latest Issue with the specified label.'
 author: 'TakahashiIkki'
 
 # Define your inputs here.
@@ -10,9 +10,9 @@ inputs:
     required: false
     default: ${{ github.token }}
 
-  tag:
+  label:
     required: true
-    description: The tag for previous issue.
+    description: The label for previous issue.
 
 # Define your outputs here.
 outputs:

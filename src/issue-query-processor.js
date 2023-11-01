@@ -1,12 +1,12 @@
 const github = require('@actions/github');
 
-const searchLatestTaggedIssue = async (token, owner, repo, searchByTag) => {
+const searchLatestLabeledIssue = async (token, owner, repo, searchByLabel) => {
   const githubClient = github.getOctokit(token);
 
-  // 指定したタグがついた issue を一件のみ取得する
+  // 指定したラベルがついた issue を一件のみ取得する
   const { data: issues } = await githubClient.rest.search.issuesAndPullRequests(
     {
-      q: `repo:${owner}/${repo} label:${searchByTag} type:issue`,
+      q: `repo:${owner}/${repo} label:${searchByLabel} type:issue`,
       sort: 'created',
       per_page: 1
     }
@@ -26,4 +26,4 @@ const searchLatestTaggedIssue = async (token, owner, repo, searchByTag) => {
   };
 };
 
-module.exports = { searchLatestTaggedIssue };
+module.exports = { searchLatestLabeledIssue };
