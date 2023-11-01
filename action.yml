@@ -1,5 +1,5 @@
-name: 'issue-task-parser'
-description: 'Parse and return tasks contained in a specific issue.'
+name: 'previous-issue-finder'
+description: 'Retrieves the content of the latest Issue with the specified tag.'
 author: 'TakahashiIkki'
 
 # Define your inputs here.
