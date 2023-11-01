@@ -1,0 +1,24 @@
+name: 'issue-task-parser'
+description: 'Parse and return tasks contained in a specific issue.'
+author: 'TakahashiIkki'
+
+# Define your inputs here.
+inputs:
+  repo_token:
+    description: |-
+      Token used to authenticate with GitHub API. Default is built-in token but a personal access token may be used for organization or user projects.
+    required: false
+    default: ${{ github.token }}
+
+  issue_number:
+    required: true
+    description: The number that identifies the issue.
+
+# Define your outputs here.
+outputs:
+  time:
+    description: 'Your output description here'
+
+runs:
+  using: node20
+  main: dist/index.js
