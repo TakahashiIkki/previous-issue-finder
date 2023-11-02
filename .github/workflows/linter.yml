@@ -42,4 +42,3 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           JAVASCRIPT_DEFAULT_STYLE: prettier
           VALIDATE_JSCPD: false
-          FILTER_REGEX_EXCLUDE: /github/workspace/.*
