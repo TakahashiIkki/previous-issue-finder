@@ -1,8 +1,14 @@
 "rules": {
   "terminology": {
-    "exclude": [
-      "github",
-      "graphql"
+    "terms": [
+      {
+        "term": "github",
+        "expected": "GitHub"
+      },
+      {
+        "term": "graphql",
+        "expected": "GraphQL"
+      }
     ]
   }
 }
