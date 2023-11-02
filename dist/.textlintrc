@@ -1,0 +1,14 @@
+"rules": {
+  "terminology": {
+    "terms": [
+      {
+        "term": "github",
+        "expected": "GitHub"
+      },
+      {
+        "term": "graphql",
+        "expected": "GraphQL"
+      }
+    ]
+  }
+}
