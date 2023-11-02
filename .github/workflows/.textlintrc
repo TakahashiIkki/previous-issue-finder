@@ -1,8 +1,6 @@
 "rules": {
   "terminology": {
     "exclude": [
-      "ID",
-      "id['’]?s",
       "github",
       "graphql"
     ]
