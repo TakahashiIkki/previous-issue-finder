@@ -1,0 +1,13 @@
+{
+  "filters": {
+    "comments": true
+  },
+  "rules": {
+    "terminology": {
+      "exclude": [
+        "github",
+        "graphql",
+      ]
+    }
+  }
+}
