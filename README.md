@@ -1,7 +1,7 @@
 # previous-issue-finder
 
 - 指定した条件を満たす直近のIssueの内容を取得して返すAction.
-- 現在は、指定条件として label を指定することが出来る 
+- 現在は、指定条件として label を指定することが出来る
 
 ## Example
 
