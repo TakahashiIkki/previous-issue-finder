@@ -1,16 +1,16 @@
 {
-  "name": "javascript-action",
-  "description": "GitHub Actions JavaScript Template",
-  "version": "0.0.0",
-  "author": "",
+  "name": "previous-issue-finder",
+  "description": "Action that retrieves and returns the contents of the most recent Issue that satisfies the specified condition.",
+  "version": "1.1.0",
+  "author": "TakahashiIkki",
   "private": true,
-  "homepage": "https://github.com/actions/javascript-action#readme",
+  "homepage": "https://github.com/TakahashiIkki/previous-issue-finder#readme",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/actions/javascript-action.git"
+    "url": "git+https://github.com/TakahashiIkki/previous-issue-finder.git"
   },
   "bugs": {
-    "url": "https://github.com/actions/javascript-action/issues"
+    "url": "https://github.com/TakahashiIkki/previous-issue-finder/issues"
   },
   "keywords": [
     "GitHub",
