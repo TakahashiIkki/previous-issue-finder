@@ -47,8 +47,23 @@ jobs:
   test-action:
     name: GitHub Actions Test
     runs-on: ubuntu-latest
+    env:
+      LC_ALL: "ja_JP.UTF-8"
+      TZ: "Asia/Tokyo"
+    strategy:
+      matrix:
+        label:
+          [
+            task,
+            日報,
+          ]
 
     steps:
+      - name: ja_JP.UTF-8
+        run: |
+          sudo locale-gen ja_JP.UTF-8
+          sudo update-locale LANG=ja_JP.UTF-8
+
       - name: Checkout
         id: checkout
         uses: actions/checkout@v4
@@ -57,7 +72,7 @@ jobs:
         id: test-action
         uses: ./
         with:
-          label: task
+          label: ${{ matrix.label }}
 
       - name: Print Output
         id: output

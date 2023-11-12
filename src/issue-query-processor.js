@@ -1,12 +1,20 @@
 const github = require('@actions/github');
+const { GithubSearchQueryBuilder } = require('./github-search-query-builder');
 
-const searchLatestLabeledIssue = async (token, owner, repo, searchByLabel) => {
+const searchLatestIssue = async (token, githubQuery) => {
+  // ToDo: TS化してこれ消したい.
+  if (!(githubQuery instanceof GithubSearchQueryBuilder)) {
+    throw new Error(
+      'githubQuery 引数は GithubSearchQueryBuilder のインスタンスである必要があります.'
+    );
+  }
+
   const githubClient = github.getOctokit(token);
 
-  // 指定したラベルがついた issue を一件のみ取得する
+  // 指定した条件の issue を一件のみ取得する
   const { data: issues } = await githubClient.rest.search.issuesAndPullRequests(
     {
-      q: `repo:${owner}/${repo} label:${searchByLabel} type:issue`,
+      q: githubQuery.build(),
       sort: 'created',
       per_page: 1
     }
@@ -26,4 +34,4 @@ const searchLatestLabeledIssue = async (token, owner, repo, searchByLabel) => {
   };
 };
 
-module.exports = { searchLatestLabeledIssue };
+module.exports = { searchLatestIssue };

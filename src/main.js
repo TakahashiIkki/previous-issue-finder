@@ -1,7 +1,8 @@
 const core = require('@actions/core');
 const { getInputs } = require('./get-inputs');
-const { searchLatestLabeledIssue } = require('./issue-query-processor');
+const { searchLatestIssue } = require('./issue-query-processor');
 const { setOutputs } = require('./set-outputs');
+const { GithubSearchQueryBuilder } = require('./github-search-query-builder');
 
 function run() {
   main().catch(error => {
@@ -18,7 +19,10 @@ async function main() {
   try {
     const { token, owner, repo, label } = getInputs();
 
-    const issue = await searchLatestLabeledIssue(token, owner, repo, label);
+    const githubQuery = new GithubSearchQueryBuilder(owner, repo).setLabel(
+      label
+    );
+    const issue = await searchLatestIssue(token, githubQuery);
     if (!issue) {
       core.setFailed('指定したタグでIssueが発見できませんでした.');
       return;
