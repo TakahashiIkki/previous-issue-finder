@@ -19,7 +19,7 @@ jobs:
       - uses: actions/checkout@v3.0.2
 
       - name: Get previous issue
-        uses: TakahashiIkki/previous-issue-finder@v1.1.0
+        uses: TakahashiIkki/previous-issue-finder@latest
         id: previous_issue
         with:
           label: daily
@@ -68,7 +68,7 @@ jobs:
         run: echo "CURRENT_DATE=$(TZ=Asia/Tokyo date +'%Y-%m-%d')" >> $GITHUB_OUTPUT
 
       - name: Get previous issue
-        uses: TakahashiIkki/previous-issue-finder@v1.1.0
+        uses: TakahashiIkki/previous-issue-finder@latest
         id: previous_issue
         with:
           label: daily
