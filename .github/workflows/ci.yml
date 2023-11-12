@@ -47,6 +47,13 @@ jobs:
   test-action:
     name: GitHub Actions Test
     runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        label:
+          [
+            task,
+            日報,
+          ]
 
     steps:
       - name: Checkout
@@ -57,7 +64,7 @@ jobs:
         id: test-action
         uses: ./
         with:
-          label: task
+          label: ${{ matrix.label }}
 
       - name: Print Output
         id: output
