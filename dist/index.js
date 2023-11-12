@@ -29842,18 +29842,70 @@ module.exports = { getInputs };
 
 /***/ }),
 
+/***/ 8551:
+/***/ ((module) => {
+
+// Githubの検索Queryを生成するClass
+//   issue-query-processor モジュールが依存している.
+//   切り分けた意図としては、ラベルに日本語が指定された時にエスケープ処理を行うことを想定するが
+//   それを searchLatestLabeledIssue() メソッド内で実装してしてしまうと、
+//   「ラベルに日本語が指定された時にエスケープ処理を行う」の要求をテストする為にGitHubのAPIを
+//   Mockすることが必要でテストの準備が面倒になることが懸念される.
+//   Query部分だけを別に用意して、これをテストすることで要求の実現を確認できるようにした
+class GithubSearchQueryBuilder {
+  // ToDo: private 修飾子をつけたいが、TS化の時に調整！
+  #owner;
+  #repository;
+  #label;
+
+  constructor(owner, repo) {
+    this.#owner = owner;
+    this.#repository = repo;
+    this.#label = undefined;
+  }
+
+  setLabel(value) {
+    this.#label = value;
+    return this;
+  }
+
+  get label() {
+    return this.#label;
+  }
+
+  build() {
+    const query = `type:issue repo:${this.#owner}/${this.#repository}`;
+    return this.#label
+      ? `${query} label: ${encodeURIComponent(this.#label)}`
+      : query;
+  }
+}
+
+module.exports = { GithubSearchQueryBuilder };
+
+
+/***/ }),
+
 /***/ 9140:
 /***/ ((module, __unused_webpack_exports, __nccwpck_require__) => {
 
 const github = __nccwpck_require__(5438);
+const { GithubSearchQueryBuilder } = __nccwpck_require__(8551);
 
-const searchLatestLabeledIssue = async (token, owner, repo, searchByLabel) => {
+const searchLatestIssue = async (token, githubQuery) => {
+  // ToDo: TS化してこれ消したい.
+  if (!(githubQuery instanceof GithubSearchQueryBuilder)) {
+    throw new Error(
+      'githubQuery 引数は GithubSearchQueryBuilder のインスタンスである必要があります.'
+    );
+  }
+
   const githubClient = github.getOctokit(token);
 
-  // 指定したラベルがついた issue を一件のみ取得する
+  // 指定した条件の issue を一件のみ取得する
   const { data: issues } = await githubClient.rest.search.issuesAndPullRequests(
     {
-      q: `repo:${owner}/${repo} label:${searchByLabel} type:issue`,
+      q: githubQuery.build(),
       sort: 'created',
       per_page: 1
     }
@@ -29873,7 +29925,7 @@ const searchLatestLabeledIssue = async (token, owner, repo, searchByLabel) => {
   };
 };
 
-module.exports = { searchLatestLabeledIssue };
+module.exports = { searchLatestIssue };
 
 
 /***/ }),
@@ -29883,8 +29935,9 @@ module.exports = { searchLatestLabeledIssue };
 
 const core = __nccwpck_require__(2186);
 const { getInputs } = __nccwpck_require__(2119);
-const { searchLatestLabeledIssue } = __nccwpck_require__(9140);
+const { searchLatestIssue } = __nccwpck_require__(9140);
 const { setOutputs } = __nccwpck_require__(8108);
+const { GithubSearchQueryBuilder } = __nccwpck_require__(8551);
 
 function run() {
   main().catch(error => {
@@ -29901,7 +29954,10 @@ async function main() {
   try {
     const { token, owner, repo, label } = getInputs();
 
-    const issue = await searchLatestLabeledIssue(token, owner, repo, label);
+    const githubQuery = new GithubSearchQueryBuilder(owner, repo).setLabel(
+      label
+    );
+    const issue = await searchLatestIssue(token, githubQuery);
     if (!issue) {
       core.setFailed('指定したタグでIssueが発見できませんでした.');
       return;
