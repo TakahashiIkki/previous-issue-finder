@@ -1,0 +1,45 @@
+{
+  "baseBranches": [
+    "main"
+  ],
+  "labels": [
+    "renovate"
+  ],
+  "extends": [
+    ":separateMajorReleases",
+    ":ignoreUnstable",
+    ":prNotPending",
+    ":automergeLinters",
+    ":automergeTesters",
+    ":automergeTypes",
+    ":automergePr"
+  ],
+  "prNotPendingHours": 1,
+  "schedule": "before 1pm on Monday",
+  "timezone": "Asia/Tokyo",
+  "packageRules": [
+    {
+      "depTypeList": [
+        "devDependencies"
+      ],
+      "updateTypes": [
+        "patch"
+      ],
+      "automerge": true
+    },
+    {
+      "groupName": "monorepo:types",
+      "packageNames": [
+        "^@types/"
+      ],
+      "automerge": true
+    },
+    {
+      "groupName": "monorepo:lint-plugin",
+      "packagePatterns": [
+        "^eslint-"
+      ],
+      "automerge": true
+    }
+  ]
+}
