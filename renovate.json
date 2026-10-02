@@ -1,7 +1,4 @@
 {
-  "baseBranchPatterns": [
-    "main"
-  ],
   "labels": [
     "renovate"
   ],
