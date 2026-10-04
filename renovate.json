@@ -1,7 +1,4 @@
 {
-  "baseBranches": [
-    "main"
-  ],
   "labels": [
     "renovate"
   ],
@@ -19,25 +16,25 @@
   "timezone": "Asia/Tokyo",
   "packageRules": [
     {
-      "depTypeList": [
+      "matchDepTypes": [
         "devDependencies"
       ],
-      "updateTypes": [
+      "matchUpdateTypes": [
         "patch"
       ],
       "automerge": true
     },
     {
       "groupName": "monorepo:types",
-      "packageNames": [
+      "matchPackageNames": [
         "^@types/"
       ],
       "automerge": true
     },
     {
       "groupName": "monorepo:lint-plugin",
-      "packagePatterns": [
-        "^eslint-"
+      "matchPackageNames": [
+        "/^eslint-/"
       ],
       "automerge": true
     }
